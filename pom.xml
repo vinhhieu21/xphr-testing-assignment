@@ -96,7 +96,69 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/dto/**</exclude>
+                                <exclude>**/entity/**</exclude>
+                                <exclude>**/domain/**</exclude>
+                                <exclude>org/example/xphrtestingassignment/dto/**</exclude>
+                                        <exclude>org/example/xphrtestingassignment/entity/**</exclude>
+                                        <exclude>org/example/xphrtestingassignment/constant/**</exclude>
+                                        <exclude>org/example/xphrtestingassignment/repository/**</exclude>
+                                        <exclude>org/example/xphrtestingassignment/config/**</exclude>
+                                        <exclude>org/example/xphrtestingassignment/annotation/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
+                                    <excludes>
+                                        <exclude>org/example/xphrtestingassignment/dto/**</exclude>
+                                        <exclude>org/example/xphrtestingassignment/entity/**</exclude>
+                                        <exclude>org/example/xphrtestingassignment/constant/**</exclude>
+                                        <exclude>org/example/xphrtestingassignment/repository/**</exclude>
+                                        <exclude>org/example/xphrtestingassignment/config/**</exclude>
+                                        <exclude>org/example/xphrtestingassignment/annotation/**</exclude>
+                                    </excludes>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>
