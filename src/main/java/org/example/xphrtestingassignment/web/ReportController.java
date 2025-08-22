@@ -36,6 +36,12 @@ public class ReportController {
             @RequestParam(defaultValue = "10") int size,
             @AuthenticationPrincipal UserDetails userDetails,
             Model model) {
+        // Provide default dates if none are provided
+        if (startDate == null || endDate == null) {
+            startDate = LocalDateTime.now().minusMonths(1);
+            endDate = LocalDateTime.now();
+        }
+
         Pageable pageable = PageRequest.of(page, size);
 
         var username = userDetails.getUsername();

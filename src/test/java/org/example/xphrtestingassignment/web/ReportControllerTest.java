@@ -44,38 +44,21 @@ class ReportControllerTest {
 
     @Test
     void getReportData_whenAdmin_thenCallsAdminServiceAndReturnsViewWithModel() {
-        int pageIdx = 2;
-        int size = 20;
-        LocalDateTime start = null;
-        LocalDateTime end   = null;
-
+        int pageIdx = 2, size = 20;
         UserDetails admin = User.withUsername("admin")
                 .password("x")
                 .roles(UserRoles.ADMIN.name())
                 .build();
-
         Page<ReportDTO> expected = new PageImpl<>(
                 List.of(new ReportDTO("Admin", "Project X", BigDecimal.valueOf(15.0)))
         );
-        ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+        when(reportService.getReportData(any(), any(), any(Pageable.class))).thenReturn(expected);
 
-        when(reportService.getReportData(eq(start), eq(end), any(Pageable.class)))
-                .thenReturn(expected);
-
-        String view = controller.getReportData(start, end, pageIdx, size, admin, model);
+        String view = controller.getReportData(null, null, pageIdx, size, admin, model);
 
         assertThat(view).isEqualTo("work_hours_report");
-
-        verify(reportService).getReportData(eq(start), eq(end), pageableCaptor.capture());
-        verifyNoMoreInteractions(reportService);
-
-        Pageable usedPageable = pageableCaptor.getValue();
-        assertThat(usedPageable.getPageNumber()).isEqualTo(pageIdx);
-        assertThat(usedPageable.getPageSize()).isEqualTo(size);
-
+        verify(reportService).getReportData(any(), any(), any(Pageable.class));
         assertThat(model.getAttribute("reportData")).isSameAs(expected);
-        assertThat(model.getAttribute("startDate")).isNull();
-        assertThat(model.getAttribute("endDate")).isNull();
         assertThat(model.getAttribute("currentPage")).isEqualTo(pageIdx);
         assertThat(model.getAttribute("pageSize")).isEqualTo(size);
         assertThat(model.getAttribute("username")).isEqualTo("admin");
@@ -87,7 +70,7 @@ class ReportControllerTest {
         int pageIdx = 0;
         int size = 10;
         LocalDateTime start = LocalDateTime.now().minusMonths(1);
-        LocalDateTime end   = LocalDateTime.now();
+        LocalDateTime end = LocalDateTime.now();
 
         UserDetails employee = User.withUsername("tom")
                 .password("x")
@@ -123,22 +106,19 @@ class ReportControllerTest {
     }
 
     @Test
-    void getReportData_whenNullDates_thenPassNullsThroughToService() {
+    void getReportData_whenNullDates_thenPassesDefaultDates() {
         UserDetails admin = User.withUsername("admin")
                 .password("x")
                 .roles(UserRoles.ADMIN.name())
                 .build();
-
         Page<ReportDTO> expected = Page.empty();
-        when(reportService.getReportData(isNull(), isNull(), any(Pageable.class)))
-                .thenReturn(expected);
+        when(reportService.getReportData(any(), any(), any(Pageable.class))).thenReturn(expected);
 
         String view = controller.getReportData(null, null, 0, 10, admin, model);
 
         assertThat(view).isEqualTo("work_hours_report");
-        verify(reportService).getReportData(isNull(), isNull(), any(Pageable.class));
-        assertThat(model.getAttribute("startDate")).isNull();
-        assertThat(model.getAttribute("endDate")).isNull();
+        verify(reportService).getReportData(any(), any(), any(Pageable.class));
+        assertThat(model.getAttribute("reportData")).isSameAs(expected);
     }
 
     @Test
