@@ -106,7 +106,7 @@ CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_time_records_time_from ON time_recor
 
 3. **Optional Enhancements (when data grows)**
 
-- **Materialized Views (MV)**: Use an MV to pre-aggregate monthly hours. Great for dashboards/hard refresh schedules.
+- **Materialized Views (MV)**: Use an MV to pre-aggregate monthly hours. Great for dashboards/hard refresh schedules. An example MV:
 ```postgresql
 CREATE MATERIALIZED VIEW employee_project_time_report AS
    SELECT t.employee_id, e.name AS employee_name, p.name AS project_name,
